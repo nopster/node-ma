@@ -1,9 +1,5 @@
 const goods = require('../goods');
-const {
-  task1: itemsFilter,
-  task2: findMaxSumItem,
-  task3: itemsNormalizer,
-} = require('./task');
+const { task1: itemsFilter, task2: findMaxSumItem, task3: itemsNormalizer } = require('./task');
 
 /**
  * @param {Object[]} items
@@ -19,7 +15,7 @@ const boot = (items, field, value) => {
   console.log('\nNormalized items');
   console.log(normalizedItems);
 
-  console.log('\nMax sum item');
+  console.log('\nMax price item');
   console.log(findMaxSumItem());
 };
 

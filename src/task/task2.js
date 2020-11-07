@@ -5,17 +5,17 @@ const goods = require('../../goods');
  * @returns {Object}
  */
 module.exports = (items = goods) => {
-  let maxIndex = 0;
-  let sum = 0;
+  let maxIndex;
+  let maxPrice = 0;
   items.forEach((item, index) => {
     const qty = item.quantity || 0;
     const price = +(item.price || item.priceForPair).replace('$', '');
 
-    if (sum < price * qty) {
-      sum = price * qty;
+    if (qty > 0 && maxPrice < price) {
+      maxPrice = price;
       maxIndex = index;
     }
   });
 
-  return items[maxIndex];
+  return maxPrice ? items[maxIndex] : {};
 };
