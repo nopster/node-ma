@@ -16,7 +16,7 @@ const boot = (items, field, value) => {
   console.log(normalizedItems);
 
   console.log('\nMax price item');
-  console.log(findMaxSumItem());
+  console.log(findMaxSumItem);
 };
 
 boot(goods, 'type', 'socks');
