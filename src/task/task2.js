@@ -1,14 +1,12 @@
-// eslint-disable-next-line no-unused-vars
 const goods = require('../../goods');
 
 /**
  * @param {Object[]} items
  * @returns {Object}
  */
-module.exports = (items) => {
+module.exports = (items = goods) => {
   let maxIndex = 0;
   let sum = 0;
-
   items.forEach((item, index) => {
     const qty = item.quantity || 0;
     const price = +(item.price || item.priceForPair).replace('$', '');

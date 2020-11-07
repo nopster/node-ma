@@ -3,7 +3,7 @@ const {
   task1: itemsFilter,
   task2: findMaxSumItem,
   task3: itemsNormalizer,
-} = require('./task/index.js');
+} = require('./task');
 
 /**
  * @param {Object[]} items
@@ -20,7 +20,7 @@ const boot = (items, field, value) => {
   console.log(normalizedItems);
 
   console.log('\nMax sum item');
-  console.log(findMaxSumItem(items));
+  console.log(findMaxSumItem());
 };
 
 boot(goods, 'type', 'socks');

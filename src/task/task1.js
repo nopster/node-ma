@@ -4,8 +4,4 @@
  * @param {string} value
  * @returns {Object[]}
  */
-module.exports = (items, field, value) => {
-  return items.filter((element) => {
-    return element[field] === value;
-  });
-};
+module.exports = (items, field, value) => items.filter((element) => element[field] === value);
