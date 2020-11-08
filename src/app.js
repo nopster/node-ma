@@ -1,22 +1,7 @@
-const goods = require('../goods');
-const { task1: itemsFilter, task2: findMaxSumItem, task3: itemsNormalizer } = require('./task');
+require('dotenv').config();
+const http = require('http');
+const requestsHandler = require('./http/requestHandler');
 
-/**
- * @param {Object[]} items
- * @param {string} field
- * @param {string} value
- */
-const boot = (items, field, value) => {
-  const filtredItems = itemsFilter(items, field, value);
-  console.log('Filtred items');
-  console.log(filtredItems);
-
-  const normalizedItems = itemsNormalizer(filtredItems);
-  console.log('\nNormalized items');
-  console.log(normalizedItems);
-
-  console.log('\nMax price item');
-  console.log(findMaxSumItem);
-};
-
-boot(goods, 'type', 'socks');
+const server = http.createServer(requestsHandler);
+server.listen(Number(process.env.PORT || 3000));
+console.log('Server running...')
