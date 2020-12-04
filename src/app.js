@@ -1,31 +1,34 @@
 require('dotenv').config();
-const http = require('http');
-const requestsHandler = require('./http/requestHandler');
+require('./utils/map');
+const server = require('./http/server');
 
-const server = http.createServer(requestsHandler);
-server.listen(Number(process.env.PORT || 3000));
-console.log('Server running...');
+function enableGracefulExit() {
+  const exitHandler = (error) => {
+    if (error) console.log(error);
 
-// eslint-disable-next-line no-extend-native
-Array.prototype.myMapAsync = async function myMap(callback) {
-  const newArr = [];
+    console.log('Gracefully stopping...');
 
-  for (let i = 0; i < this.length; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
-    newArr[i] = await callback(this[i]);
-  }
+    server.stop(() => {
+      process.exit();
+    });
+  };
 
-  return newArr;
-};
+  // Catches ctrl+c event
+  process.on('SIGINT', exitHandler);
+  process.on('SIGTERM', exitHandler);
 
-// eslint-disable-next-line no-extend-native
-Array.prototype.myMap = function myMap(callback) {
-  const newArr = [];
+  // Catches "kill pid"
+  process.on('SIGUSR1', exitHandler);
+  process.on('SIGUSR2', exitHandler);
 
-  for (let i = 0; i < this.length; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
-    newArr[i] = callback(this[i]);
-  }
+  // Catches uncaught/unhandled exeptions
+  process.on('uncaughtException', exitHandler);
+  process.on('unhandledRejection', exitHandler);
+}
 
-  return newArr;
-};
+function boot() {
+  enableGracefulExit();
+  server.start();
+}
+
+boot();
