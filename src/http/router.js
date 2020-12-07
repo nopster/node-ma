@@ -1,5 +1,6 @@
 const goodsController = require('../controller/goods');
 const discountController = require('../controller/discount');
+const uploadController = require('../controller/upload');
 const { generateErrorResponse } = require('./responseHandler');
 
 /**
@@ -13,6 +14,11 @@ module.exports = (request, response) => {
   if (method === 'GET' && pathname === '/task1') return goodsController.task1(response, queryParams);
   if (method === 'GET' && pathname === '/task2') return goodsController.task2(response);
   if (method === 'GET' && pathname === '/task3') return goodsController.task3(response);
+  if (method === 'GET' && pathname === '/uploads') return uploadController.list(response);
+  if (method === 'POST' && pathname.indexOf('/uploads/optimize') === 0) {
+    const file = pathname.replace('/uploads/optimize', '');
+    return uploadController.optimize(file, response);
+  }
 
   if (method === 'GET' && pathname === '/discount/callback') return discountController.callbackMethod(response);
   if (method === 'GET' && pathname === '/discount/promise') return discountController.promiseMethod(response);
