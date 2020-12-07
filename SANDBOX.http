@@ -27,6 +27,9 @@ GET http://localhost:3000/discount/promise
 GET http://localhost:3000/discount/async
 ###
 
+# get uploads list
+GET http://localhost:3000/uploads
+###
 
 # Uploader
 POST http://localhost:3000/upload HTTP/1.1
