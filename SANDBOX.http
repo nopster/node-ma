@@ -14,10 +14,23 @@ GET http://localhost:3000/task2
 GET http://localhost:3000/task3
 ###
 
+# callback discount
+GET http://localhost:3000/discount/callback
+###
+
+# promise discount
+GET http://localhost:3000/discount/promise
+###
+
+# async discount
+GET http://localhost:3000/discount/async
+###
+
 
 # Uploader
 POST http://localhost:3000/upload HTTP/1.1
 content-type: application/json
+
 
 [
     {
