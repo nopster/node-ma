@@ -1,6 +1,6 @@
 const goodsModel = require('../model/goods');
 const tasks = require('../task');
-const { generateSuccessResponse, generateErrorResponse } = require('../http/responseHandler');
+const { generateSuccessResponse, generateErrorResponse } = require('../server/responseHandler');
 
 module.exports = {
   /**

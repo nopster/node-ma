@@ -1,4 +1,4 @@
-const { generateSuccessResponse, generateErrorResponse } = require('../http/responseHandler');
+const { generateSuccessResponse, generateErrorResponse } = require('../server/responseHandler');
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
@@ -38,5 +38,5 @@ module.exports = {
   async optimize(file, response) {
     runOptimize(file);
     return generateSuccessResponse(response, [], 202);
-  }
+  },
 };

@@ -2,7 +2,7 @@ const { promisify } = require('util');
 const { randomInt } = require('crypto');
 const goodsModel = require('../model/goods');
 const task3 = require('../task/task3');
-const { generateSuccessResponse } = require('../http/responseHandler');
+const { generateSuccessResponse } = require('../server/responseHandler');
 
 module.exports = {
   generateDiscount(callback) {

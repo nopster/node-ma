@@ -1,6 +1,7 @@
-require('dotenv').config();
 require('./utils/map');
-const server = require('./http/server');
+
+const { port } = require('./config');
+const app = require('./server');
 
 function enableGracefulExit() {
   const exitHandler = (error) => {
@@ -8,9 +9,8 @@ function enableGracefulExit() {
 
     console.log('Gracefully stopping...');
 
-    server.stop(() => {
-      process.exit();
-    });
+    app.close();
+    process.exit();
   };
 
   // Catches ctrl+c event
@@ -28,7 +28,9 @@ function enableGracefulExit() {
 
 function boot() {
   enableGracefulExit();
-  server.start();
+  app.listen(port, () => {
+    console.log(`App listening at http://localhost:${port}`);
+  });
 }
 
 boot();
