@@ -13,6 +13,10 @@ async function runOptimize(filename) {
   const readStream = fs.createReadStream(filePath);
   const optimizerStream = optimizer();
 
+  if (!fs.existsSync('./uploads/optimize')) {
+    fs.mkdirSync('./uploads/optimize');
+  }
+
   filePath = `./uploads/optimize/${filename}`;
   const outputStream = fs.createWriteStream(filePath);
 

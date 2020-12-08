@@ -12,6 +12,11 @@ async function uploadGzip(inputStream) {
   const gunzip = createGunzip();
 
   const filename = uuidv4();
+
+  if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads');
+  }
+
   const filePath = `./uploads/${filename}.json`;
   const outputStream = fs.createWriteStream(filePath);
   const csvToJson = createCsvToJson();

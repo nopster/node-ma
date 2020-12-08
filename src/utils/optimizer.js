@@ -13,7 +13,7 @@ function optimizer() {
     for (let index = 0; index < itemsLength - 1; index += 1) {
       const itemFields = items[index].replace(',\n').split(',');
       const type = itemFields[0].split('"')[3];
-      const color = itemFields[1  ].split('"')[3];
+      const color = itemFields[1].split('"')[3];
       const quantity = +itemFields[2].split('"')[3];
       const price = itemFields[3].split('"')[3];
       const isPair = itemFields[4].split('"')[3];
@@ -30,15 +30,15 @@ function optimizer() {
 
     chunkLast = items[itemsLength - 1];
 
-    callback(null, null);
+    callback(null, '');
   };
 
   const flush = (callback) => {
     console.log(`Summary Quantity = ${summaryQuantity}`);
     const resultArray = [];
-    const optimizedArrayLength = Object.keys(optimizedArray).length;
-    for (let index = 0; index < optimizedArrayLength; index += 1) {
-      resultArray.push(optimizedArray[index]);
+
+    for (const [, value] of Object.entries(optimizedArray)) {
+      resultArray.push(value);
     }
 
     callback(null, JSON.stringify(resultArray));
