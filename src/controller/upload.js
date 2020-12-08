@@ -38,5 +38,5 @@ module.exports = {
   async optimize(file, response) {
     runOptimize(file);
     return generateSuccessResponse(response, [], 202);
-  }
+  },
 };

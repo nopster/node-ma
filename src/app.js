@@ -29,7 +29,7 @@ function enableGracefulExit() {
 function boot() {
   enableGracefulExit();
   app.listen(port, () => {
-    console.log(`App listening at http://localhost${port}`);
+    console.log(`App listening at http://localhost:${port}`);
   });
 }
 

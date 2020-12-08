@@ -1,16 +1,16 @@
 const express = require('express');
-const { basicToken } = require('../config')
+const { basicToken } = require('../config');
 const goodsController = require('../controller/goods');
 const discountController = require('../controller/discount');
 const uploadController = require('../controller/upload');
 const { uploadGzip } = require('../controller/uploadGzip');
-const { generateErrorResponse, generateSuccessResponse } = require('./responseHandler');
+const { generateSuccessResponse } = require('./responseHandler');
 
 const app = express();
 
 app.use((req, res, next) => {
   if (req.headers.authorization !== `Basic ${basicToken}`) {
-    return generateErrorResponse(res, 'unauthorized access', 403);
+    next({ error: 'unauthorized access', code: 403 });
   }
 
   return next();
@@ -32,17 +32,29 @@ app.post(/^\/uploads\/optimize\/(?:([^\/]+?))\/?$/i, (req, res) =>
 app.post('/upload', express.json(), (req, res) => goodsController.upload(res, req.body));
 
 app.get('/uploads', express.json(), (req, res) => uploadController.list(res));
-app.put('/upload/gzip', async (req, res) => {
+app.put('/upload/gzip', async (req, res, next) => {
   try {
     await uploadGzip(req);
   } catch (error) {
     console.error('Failed to upload Gzip', error);
-    generateErrorResponse(res, 'Failed to upload');
+    next({ error: 'not_found', code: 400 });
   }
 
   generateSuccessResponse(res);
 });
 
-app.use((req, res) => generateErrorResponse(res, 'not_found', 404));
+app.use((req, res, next) => next({ error: 'not_found', code: 404 }));
+
+app.use((err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  res.status(err.code || 500);
+  res.write(JSON.stringify({ error: err.error || 'Internal Server Error' }));
+  res.end();
+
+  return null;
+});
 
 module.exports = app;

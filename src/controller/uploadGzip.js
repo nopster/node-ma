@@ -30,4 +30,4 @@ async function uploadGzip(inputStream) {
 
 module.exports = {
   uploadGzip,
-}
+};
