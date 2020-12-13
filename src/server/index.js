@@ -3,6 +3,7 @@ const { basicToken } = require('../config');
 const goodsController = require('../controller/goods');
 const discountController = require('../controller/discount');
 const uploadController = require('../controller/upload');
+const productController = require('../controller/product');
 const { uploadGzip } = require('../controller/uploadGzip');
 const { generateSuccessResponse } = require('./responseHandler');
 
@@ -21,6 +22,11 @@ app.get('/task1', (req, res) => goodsController.task1(res, req.query));
 app.get('/task2', (req, res) => goodsController.task2(res));
 app.get('/task3', (req, res) => goodsController.task3(res));
 
+app.post('/createProduct', express.json(), (req, res) => productController.createProduct(res, req));
+app.get('/getProduct', (req, res) => productController.getProduct(res, req));
+app.post('/updateProduct', express.json(), (req, res) => productController.updateProduct(res, req));
+app.post('/deleteProduct', (req, res) => productController.deleteProduct(res, req));
+
 app.get('/discount/callback', (req, res) => discountController.callbackMethod(res));
 app.get('/discount/promist', (req, res) => discountController.promiseMethod(res));
 app.get('/discount/async', (req, res) => discountController.asyncMethod(res));
@@ -31,7 +37,7 @@ app.post(/^\/uploads\/optimize\/(?:([^\/]+?))\/?$/i, (req, res) =>
 
 app.post('/upload', express.json(), (req, res) => goodsController.upload(res, req.body));
 
-app.get('/uploads', express.json(), (req, res) => uploadController.list(res));
+app.get('/uploads', (req, res) => uploadController.list(res));
 app.put('/upload/gzip', async (req, res, next) => {
   try {
     await uploadGzip(req);

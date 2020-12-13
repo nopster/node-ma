@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { pipeline } = require('stream');
 const { optimizer } = require('../utils/optimizer');
+const { createJsonToDbStream } = require('../utils/json-to-db');
 
 const promisifiedPipeline = promisify(pipeline);
 const readdirp = promisify(fs.readdir);
@@ -18,7 +19,7 @@ async function runOptimize(filename) {
   }
 
   filePath = `./uploads/optimize/${filename}`;
-  const outputStream = fs.createWriteStream(filePath);
+  const outputStream = createJsonToDbStream();
 
   await promisifiedPipeline(readStream, optimizerStream, outputStream);
 }

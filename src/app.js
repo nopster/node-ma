@@ -1,7 +1,8 @@
 require('./utils/map');
 
-const { port } = require('./config');
+const { port, db: dbConfig } = require('./config');
 const app = require('./server');
+const db = require('./db')(dbConfig);
 
 function enableGracefulExit() {
   const exitHandler = (error) => {
@@ -26,8 +27,9 @@ function enableGracefulExit() {
   process.on('unhandledRejection', exitHandler);
 }
 
-function boot() {
+async function boot() {
   enableGracefulExit();
+  await db.testConnection();
   app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`);
   });

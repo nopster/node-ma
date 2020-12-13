@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  node-ma:
+    container_name: "node-ma"
+    restart: always
+    build: .
+    network_mode: bridge
+    depends_on:
+      - db
+    external_links:
+      - db
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/app/
+  db:
+    container_name: db
+    network_mode: bridge
+    restart: always
+    image: postgres:13.1-alpine
+    environment:
+      POSTGRES_USER: main
+      POSTGRES_DB: main
+      POSTGRES_PASSWORD: main
+    ports:
+    - 15432:5432
+    volumes:
+      - ./data/:/var/lib/postgresql/data
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    network_mode: bridge
+    depends_on:
+      - db
+    links:
+      - db:db
+    ports:
+    - 18080:8080
