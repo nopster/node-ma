@@ -9,22 +9,23 @@ const promisifiedPipeline = promisify(pipeline);
 const { createCsvToJson } = require('../utils/csv-to-json');
 
 async function uploadGzip(inputStream) {
-  const gunzip = createGunzip();
-
-  const filename = uuidv4();
-
-  if (!fs.existsSync('./uploads')) {
-    fs.mkdirSync('./uploads');
-  }
-
-  const filePath = `./uploads/${filename}.json`;
-  const outputStream = fs.createWriteStream(filePath);
-  const csvToJson = createCsvToJson();
-
   try {
+    const gunzip = createGunzip();
+
+    const filename = uuidv4();
+
+    if (!fs.existsSync('./uploads')) {
+      fs.mkdirSync('./uploads');
+    }
+
+    const filePath = `./uploads/${filename}.json`;
+    const outputStream = fs.createWriteStream(filePath);
+    const csvToJson = createCsvToJson();
+
     await promisifiedPipeline(inputStream, gunzip, csvToJson, outputStream);
   } catch (error) {
     console.log('CSV pipeline failed', error);
+    throw Error('CSV pipeline filed');
   }
 }
 

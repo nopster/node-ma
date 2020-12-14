@@ -10,7 +10,7 @@ function enableGracefulExit() {
 
     console.log('Gracefully stopping...');
 
-    app.close();
+    db.close();
     process.exit();
   };
 

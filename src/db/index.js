@@ -54,18 +54,31 @@ module.exports = (config) => {
 
       values.push(id);
 
-      await client.query(
+      const res = await client.query(
         `UPDATE products SET ${query.join(',')} where id = $${values.length}`,
         values,
       );
 
+      if (res.rowCount === 0) {
+        throw Error('Product not updated');
+      }
+
       console.log(`DEBUG: Product updated: ${JSON.stringify(product)}`);
+
       return product;
     },
 
     deleteProduct: async (id) => {
       const timestamp = new Date();
-      await client.query('UPDATE products SET deleted_at = $1 WHERE id=$2', [timestamp, id]);
+      const res = await client.query(
+        'UPDATE products SET deleted_at = $1 WHERE id=$2 AND deleted_at is NULL',
+        [timestamp, id],
+      );
+
+      if (res.rowCount === 0) {
+        throw Error('Product not found or already deleted');
+      }
+
       return [];
     },
 

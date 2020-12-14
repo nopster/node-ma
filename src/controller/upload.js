@@ -1,8 +1,8 @@
-const { generateSuccessResponse, generateErrorResponse } = require('../server/responseHandler');
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
 const { pipeline } = require('stream');
+const { generateSuccessResponse } = require('../server/responseHandler');
 const { optimizer } = require('../utils/optimizer');
 const { createJsonToDbStream } = require('../utils/json-to-db');
 
@@ -10,18 +10,22 @@ const promisifiedPipeline = promisify(pipeline);
 const readdirp = promisify(fs.readdir);
 
 async function runOptimize(filename) {
-  let filePath = `./uploads/${filename}`;
-  const readStream = fs.createReadStream(filePath);
-  const optimizerStream = optimizer();
+  try {
+    const filePath = `./uploads/${filename}`;
+    const readStream = fs.createReadStream(filePath);
+    const optimizerStream = optimizer();
 
-  if (!fs.existsSync('./uploads/optimize')) {
-    fs.mkdirSync('./uploads/optimize');
+    if (!fs.existsSync('./uploads/optimize')) {
+      fs.mkdirSync('./uploads/optimize');
+    }
+
+    const outputStream = createJsonToDbStream();
+
+    await promisifiedPipeline(readStream, optimizerStream, outputStream);
+  } catch (err) {
+    console.error('Error on optimize file');
+    console.error(err);
   }
-
-  filePath = `./uploads/optimize/${filename}`;
-  const outputStream = createJsonToDbStream();
-
-  await promisifiedPipeline(readStream, optimizerStream, outputStream);
 }
 
 module.exports = {
