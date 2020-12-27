@@ -2,7 +2,6 @@ const express = require('express');
 const { basicToken } = require('../config');
 const goodsController = require('../controller/goods');
 const discountController = require('../controller/discount');
-const uploadController = require('../controller/upload');
 const productController = require('../controller/product');
 const { uploadGzip } = require('../controller/uploadGzip');
 const { generateSuccessResponse } = require('./responseHandler');
@@ -31,13 +30,8 @@ app.get('/discount/callback', (req, res) => discountController.callbackMethod(re
 app.get('/discount/promist', (req, res) => discountController.promiseMethod(res));
 app.get('/discount/async', (req, res) => discountController.asyncMethod(res));
 
-app.post(/^\/uploads\/optimize\/(?:([^\/]+?))\/?$/i, (req, res) =>
-  uploadController.optimize(req.params[0], res),
-);
-
 app.post('/upload', express.json(), (req, res) => goodsController.upload(res, req.body));
 
-app.get('/uploads', (req, res) => uploadController.list(res));
 app.put('/upload/gzip', async (req, res, next) => {
   try {
     await uploadGzip(req);

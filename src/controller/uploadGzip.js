@@ -1,28 +1,17 @@
 const { pipeline } = require('stream');
 const { createGunzip } = require('zlib');
 const { promisify } = require('util');
-const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
 
 const promisifiedPipeline = promisify(pipeline);
 
-const { createCsvToJson } = require('../utils/csv-to-json');
+const { createCsvToDb } = require('../utils/csv-to-db');
 
 async function uploadGzip(inputStream) {
   try {
     const gunzip = createGunzip();
+    const csvToDb = createCsvToDb();
 
-    const filename = uuidv4();
-
-    if (!fs.existsSync('./uploads')) {
-      fs.mkdirSync('./uploads');
-    }
-
-    const filePath = `./uploads/${filename}.json`;
-    const outputStream = fs.createWriteStream(filePath);
-    const csvToJson = createCsvToJson();
-
-    await promisifiedPipeline(inputStream, gunzip, csvToJson, outputStream);
+    await promisifiedPipeline(inputStream, gunzip, csvToDb);
   } catch (error) {
     console.log('CSV pipeline failed', error);
     throw Error('CSV pipeline filed');

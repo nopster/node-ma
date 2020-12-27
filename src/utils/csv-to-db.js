@@ -1,39 +1,32 @@
 /* eslint-disable no-continue */
-const { Transform } = require('stream');
+const { Writable } = require('stream');
+const { db: dbConfig } = require('../config');
+const db = require('../db')(dbConfig);
 
-function createCsvToJson() {
+function createCsvToDb() {
   let firstItem = true;
   let fieldsNames = [];
   let fieldsCount = 0;
   let lastLine = '';
-  let firstLine = true;
 
-  const parseLine = (goodLine) => {
-    let res = '\n{';
+  const parseLine = async (goodLine) => {
+    const product = {};
 
     for (let fieldIndex = 0; fieldIndex < fieldsCount; fieldIndex += 1) {
-      res += `"${fieldsNames[fieldIndex]}":"${goodLine[fieldIndex]}"`;
-
-      if (fieldIndex !== fieldsCount - 1) {
-        res += ',';
-      }
+      product[fieldsNames[fieldIndex]] = goodLine[fieldIndex];
     }
 
-    res += '}';
-
-    return res;
+    await db.insertOrUpdateQty(product);
   };
 
-  const transform = (chunk, encoding, callback) => {
+  const write = async (chunk, encoding, next) => {
     const chunkStr = lastLine + chunk.toString();
     lastLine = '';
-    let res = '';
     const chunkArr = chunkStr.split('\n');
     const size = chunkArr.length;
 
     for (let index = 0; index < size; index += 1) {
       if (firstItem && index === 0) {
-        res += '[';
         fieldsNames = chunkArr[index].split(',');
         fieldsCount = fieldsNames.length;
         firstItem = false;
@@ -47,30 +40,22 @@ function createCsvToJson() {
 
       const good = chunkArr[index].split(',');
 
-      if (firstLine) {
-        firstLine = false;
-      } else {
-        res += ',';
-      }
-
-      res += parseLine(good);
+      // eslint-disable-next-line no-await-in-loop
+      await parseLine(good);
     }
 
-    callback(null, res);
+    next();
   };
 
-  const flush = (callback) => {
-    let res = '';
-
+  const end = (next) => {
     if (lastLine) {
-      res += parseLine(lastLine);
+      parseLine(lastLine);
     }
 
-    res += ']';
-    callback(null, res);
+    next();
   };
 
-  return new Transform({ transform, flush });
+  return new Writable({ write, end });
 }
 
-module.exports = { createCsvToJson };
+module.exports = { createCsvToDb };
